@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>particles</title>
+    <style>
+        html, body{ 
+            margin:0; 
+            padding:0; 
+            width:100%;
+            height:100%;
+            overflow:hidden;
+         }
+         
+        #iScreen{
+            background:black;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="iScreen" width="640px" height="480px"></canvas>
+    <script>
+        
+         /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            step2
+                랜덤한 확률로 위치 & opacity값도 변경
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        
+        var iScreen     =document.getElementById("iScreen");
+        var context     =iScreen.getContext("2d");
+        var particles   =[];
+        var PARTICLE_COUNT = 10;
+        // 시작 값 저장
+        var ow = 640; 
+        var oh = 480; 
+        
+        
+        /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            resize처리 
+                - canvas의 현재 상태를 temp에 저장
+                - resize처리 ( 스케일 비율 유지 )
+                - temp를 이용한 상태 복원
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        function onResize_Window(){
+            var temp =context.getImageData( 0, 0, iScreen.width, iScreen.height );
+            
+            // browser viewport size
+            var w = window.innerWidth;
+            var h = window.innerHeight; 
+            // scale 구하기 
+            var scale = Math.min(w/ow, h/oh);
+            iScreen.width = ow * scale;
+            iScreen.height = ow * scale;
+            
+            context.putImageData(temp, 0, 0);
+        }
+        
+        /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            particle생성 
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        function createParticle(){            
+            var p={
+                radius:3+parseInt(Math.random()*5),
+                opacity:Math.random(),
+                color:0xffffff,
+                x:parseInt(Math.random()*ow),
+                y:parseInt(Math.random()*oh),
+                tx:parseInt(Math.random()*ow),
+                ty:parseInt(Math.random()*oh)
+            }
+            return p;
+        }
+        
+        function drawParticles(  ){
+             for( var i=0; i<getParticleCount(); i++ ){
+                var p = particles[i];
+                context.beginPath();
+                context.arc( p.x, p.y, p.radius, 0, 2 * Math.PI );
+                context.fillStyle = "rgba( 255, 255, 255,"+ p.opacity +")";
+                context.fill();
+                context.closePath();
+            }
+        }
+        
+        
+        function initializeParticle(){
+            for( var i=0; i<PARTICLE_COUNT; i++) {
+                particles.push(createParticle());    
+            }
+        }
+        
+        function getParticleCount(){
+            return particles.length;
+        }
+        
+        
+        /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            particle위치 갱신
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        function getMinMax( min, max ){
+            var value = Math.floor( Math.random()*(max - min) + 1 ) + min;
+            return value;
+        }
+        
+        function updateParticle(){
+            var count = getParticleCount();
+            var p;
+            for( var i=0; i<count; i++){
+                p = particles[i];
+                if( Math.floor(Math.random()*50) == 0 ){
+                  p.tx = p.x+getMinMax(-100, 100);
+                  p.ty = p.y+getMinMax(-100, 100);
+                  p.opacity = Math.random();
+                }
+                
+                p.x -=(p.x-p.tx)*.12;
+                p.y -=(p.y-p.ty)*.12;
+                
+            }
+            
+        }
+        
+        function updateScreenBlur(){
+            context.beginPath();
+            context.fillStyle = "rgba(0, 0, 0, 0.5)";
+            context.fillRect( 0, 0, iScreen.width, iScreen.height );
+            context.closePath();
+        }
+
+        
+        /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            particle간 라인 그리기 
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        function drawParticleLine(){
+            var i;
+            var p;
+            var n;
+            var count = getParticleCount();
+            for( i=0; i<count; i++ ) {
+                var index =parseInt(Math.random() * count);
+                p   =particles[i];
+                n   =particles[index];
+                context.beginPath();
+                context.strokeStyle = "rgba( 255, 255, 255,"+ p.opacity +")";
+                context.lineWidth = 1;
+                context.moveTo( p.x, p.y );
+                context.lineTo( n.x, n.y );
+                context.stroke()
+                context.closePath();
+            }
+            
+        }
+        
+        
+                
+        /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            화면에 particle 그리기
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        function render(){
+            
+            updateScreenBlur();
+            updateParticle();
+            
+            drawParticles();
+            drawParticleLine();
+        }
+        
+        onResize_Window();
+        window.addEventListener( "resize", onResize_Window );
+        initializeParticle();
+        setInterval( render, 50 );
+        
+        
+    </script>
+</body>
+</html>
