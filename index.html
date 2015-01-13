@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PARTICLE-NODE</title>
+    <style>
+        html, body{ 
+            margin:0; 
+            padding:0; 
+            width:100%;
+            height:100%;
+            overflow:hidden;
+            background:black;
+            font:62.5%;
+         }
+         
+        #iScreen{
+            position:absolute;
+            background:black;
+            z-index:1;
+        }
+        
+        div#description{
+            position:absolute;
+            padding-left:1em;
+            z-index:2;
+        }
+        div#description p{
+            font:1em;
+            color:white;
+            line-height:1.3em;
+        }
+        
+        div#description .hilight{
+            color:#ffcc00;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="description">
+        <p>
+            <span class="hilight"><b>PARTICLE-NODE </b></span>by Chaospace<br>
+            canvas drawing api study <span class="hilight"><b>move mouse</b></span><br>
+            2015.01.13
+        </p>
+    </div>
+    <canvas id="iScreen" width="640px" height="480px"></canvas>
+    <script src="./js/particle-node-comp3.js" type="text/javascript"></script>
+    <script>
+         /**
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+            step6
+                별도 js파일 생성
+               - 익명함수 , 
+               - 초기화 파라미터 추가 
+               
+            step5_4
+                particle 생성 시간을 균일하게 제어하기 위한 처리 추가
+                
+            step5_3
+                particle 그룹당 컬러 변경처리 추가 
+                
+            step5_2
+                particle추가 후 각 그룹추가 처리 방식으로 전환
+                선을 그린다. 
+                    - 어떻게 그릴까?
+                    - 하나의 원이 움직이고 일정거리 안에 들어오는 점들끼리 연결한다.
+                    
+            step5_1
+                컬러 변경 제거 
+                
+            step5
+              라인 제거 후 마우스 주위로 원 생성
+            
+            step4
+                마우스 주위로 생성되게
+                    - 생명주기를 넘기면 자동 소멸
+                
+                자연스러운 추가 처리를 고민해 봐야 할듯.
+                
+            step3
+                컬로 변경 추가 
+            
+            step2
+                랜덤한 확률로 위치 & opacity값도 변경
+        ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
+        */
+        var node = new ParticleNode( document.getElementById("iScreen"));
+        node.start();
+        console.log( node );
+    </script>
+</body>
+</html>
