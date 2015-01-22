@@ -81,8 +81,8 @@
             this.mx;
             this.my; // mouse position;
             this.groupColor = getRandomColor();
-            this.onResize();
             window.addEventListener( "resize", this.onResize );
+            this.onResize();
         },
         /**
         ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
@@ -93,15 +93,19 @@
         ▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧▧
         */
         onResize:function(){
-            var temp =this.context.getImageData( 0, 0, this.iScreen.width, this.iScreen.height );
-            // browser viewport size
-            var w = window.innerWidth;
-            var h = window.innerHeight; 
-            // scale 구하기 
-            var scale = Math.min(w/OW, h/OH);
-            this.iScreen.width = OW * scale;
-            this.iScreen.height = OH * scale;
-            this.context.putImageData(temp, 0, 0);
+            
+            if( this.context ){
+                var temp =this.context.getImageData( 0, 0, this.iScreen.width, this.iScreen.height );
+                // browser viewport size
+                var w = window.innerWidth;
+                var h = window.innerHeight; 
+                // scale 구하기 
+                var scale = Math.min(w/OW, h/OH);
+                this.iScreen.width = w;//OW * scale;
+                this.iScreen.height = h;//OH * scale;
+                this.context.putImageData(temp, 0, 0);
+            }
+            
         },
         
         /**
